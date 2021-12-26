@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.ML.OnnxRuntime.Gpu.1.7.1\build\native\Microsoft.ML.OnnxRuntime.Gpu.props" Condition="Exists('..\packages\Microsoft.ML.OnnxRuntime.Gpu.1.7.1\build\native\Microsoft.ML.OnnxRuntime.Gpu.props')" />
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{eb42e76d-284f-49d6-8e04-4c1c1dc4ee65}</ProjectGuid>
+    <RootNamespace>DL</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
+    <CudaToolkitCustomDir>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2</CudaToolkitCustomDir>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 11.2.props" />
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>$(ProjectName)_cpp</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName)_cpp</TargetName>
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;DL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;DL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;DL_EXPORTS;_WINDOWS;_USRDLL;HAVE_CUDA;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>D:\visual_code\dnn_test_c\dnn_test_c\DL\json;D:\visual_code\dnn_test_c\dnn_test_c\DL;D:\visual_code\TensorRT-8.2.0.6\samples\common\windows;D:\visual_code\TensorRT-8.2.0.6\samples\common;D:\visual_code\TensorRT-8.2.0.6\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\include;D:\visual_code\libtorch-win-shared-with-deps-debug-1.7.1+cu110\libtorch\include;D:\opencv-4.5.1\build\install\include;D:\vision-0.8.2;D:\visual_code\libtorch-win-shared-with-deps-debug-1.7.1+cu110\libtorch\include\torch\csrc\api\include;D:\eigen-3.3.9;D:\visual_code\dnn_test_c\dnn_test_c\packages\Microsoft.ML.OnnxRuntime.Gpu.1.7.1\build\native\include;D:\vision-0.8.2\torchvision\csrc;D:\python-3.8.5\include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <OpenMPSupport>true</OpenMPSupport>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>D:\visual_code\TensorRT-8.2.0.6\lib;D:\visual_code\libtorch-win-shared-with-deps-debug-1.7.1+cu110\libtorch;D:\opencv-4.5.1\build\lib\Debug;D:\vision-0.8.2\build\Debug;D:\visual_code\libtorch-win-shared-with-deps-debug-1.7.1+cu110\libtorch\lib\;D:\visual_code\dnn_test_c\dnn_test_c\packages\Microsoft.ML.OnnxRuntime.Gpu.1.7.1\runtimes\win-x64\native;D:\python-3.8.5\libs\python38_d.lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>D:\visual_code\libtorch-win-shared-with-deps-debug-1.7.1+cu110\libtorch\lib\c10.lib;D:\visual_code\libtorch-win-shared-with-deps-debug-1.7.1+cu110\libtorch\lib\caffe2_nvrtc.lib;D:\visual_code\libtorch-win-shared-with-deps-debug-1.7.1+cu110\libtorch\lib\c10_cuda.lib;D:\visual_code\libtorch-win-shared-with-deps-debug-1.7.1+cu110\libtorch\lib\torch.lib;D:\visual_code\libtorch-win-shared-with-deps-debug-1.7.1+cu110\libtorch\lib\torch_cuda.lib;D:\visual_code\libtorch-win-shared-with-deps-debug-1.7.1+cu110\libtorch\lib\torch_cpu.lib;-INCLUDE:?warp_size@cuda@at@@YAHXZ;opencv_world451d.lib;myelin64_1.lib;nvinfer.lib;nvinfer_plugin.lib;nvonnxparser.lib;nvparsers.lib;cuda.lib;cudnn.lib;cudart.lib;D:\vision-0.8.2\build\Debug\torchvision.lib;onnxruntime.lib;D:\python-3.8.5\libs\python38_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;DL_EXPORTS;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>D:\visual_code\dnn_test_c\dnn_test_c\DL\json;D:\visual_code\dnn_test_c\dnn_test_c\DL;D:\visual_code\TensorRT-8.2.0.6\samples\common\windows;D:\visual_code\TensorRT-8.2.0.6\samples\common;D:\visual_code\TensorRT-8.2.0.6\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\include;D:\visual_code\libtorch-win-shared-with-deps-1.7.1+cu110\libtorch\include;D:\opencv-4.5.1\build\install\include;D:\vision-0.8.2;D:\visual_code\libtorch-win-shared-with-deps-1.7.1+cu110\libtorch\include\torch\csrc\api\include;D:\vision-0.8.2\torchvision\csrc\models;D:\vision-0.8.2\torchvision\csrc;D:\eigen-3.3.9;D:\visual_code\dnn_test_c\dnn_test_c\packages\Microsoft.ML.OnnxRuntime.Gpu.1.7.1\build\native\include;D:\python-3.8.5\include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <OpenMPSupport>true</OpenMPSupport>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>D:\visual_code\TensorRT-8.2.0.6\lib;D:\visual_code\libtorch-win-shared-with-deps-1.7.1+cu110\libtorch\lib;D:\opencv-4.5.1\build\lib\Release;D:\vision-0.8.2\build\Release;D:\visual_code\dnn_test_c\dnn_test_c\packages\Microsoft.ML.OnnxRuntime.Gpu.1.7.1\runtimes\win-x64\native;D:\visual_code\libtorch-win-shared-with-deps-debug-1.7.1+cu110\libtorch\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>D:\visual_code\libtorch-win-shared-with-deps-1.7.1+cu110\libtorch\lib\c10.lib;C:\Program Files\NVIDIA Corporation\NvToolsExt\lib\x64\nvToolsExt64_1.lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\lib\x64\cudart_static.lib;D:\visual_code\libtorch-win-shared-with-deps-1.7.1+cu110\libtorch\lib\caffe2_nvrtc.lib;D:\visual_code\libtorch-win-shared-with-deps-1.7.1+cu110\libtorch\lib\c10_cuda.lib;D:\visual_code\libtorch-win-shared-with-deps-1.7.1+cu110\libtorch\lib\torch.lib;D:\visual_code\libtorch-win-shared-with-deps-1.7.1+cu110\libtorch\lib\torch_cuda.lib;D:\visual_code\libtorch-win-shared-with-deps-1.7.1+cu110\libtorch\lib\torch_cpu.lib;-INCLUDE:?warp_size@cuda@at@@YAHXZ;opencv_world451.lib;myelin64_1.lib;nvinfer.lib;nvinfer_plugin.lib;nvonnxparser.lib;nvparsers.lib;cuda.lib;cudnn.lib;cudart.lib;D:\vision-0.8.2\build\Release\torchvision.lib;onnxruntime.lib;D:\python-3.8.5\libs\python38.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\TensorRT-7.2.2.3\samples\common\logger.h" />
+    <ClInclude Include="dispatcher.hpp" />
+    <ClInclude Include="DL.h" />
+    <ClInclude Include="dnn_impl.h" />
+    <ClInclude Include="dnn_base.hpp" />
+    <ClInclude Include="dnn_module_onnx.h" />
+    <ClInclude Include="dnn_module_tensorrt.h" />
+    <ClInclude Include="dnn_module_torch.h" />
+    <ClInclude Include="logdispatcher.h" />
+    <ClInclude Include="logmanager.h" />
+    <ClInclude Include="logsender.h" />
+    <ClInclude Include="logwriter.h" />
+    <ClInclude Include="lookup_table.hpp" />
+    <ClInclude Include="msgstructure.h" />
+    <ClInclude Include="receiver.hpp" />
+    <ClInclude Include="sender.hpp" />
+    <ClInclude Include="structure.h" />
+    <ClInclude Include="json\json\json-forwards.h" />
+    <ClInclude Include="json\json\json.h" />
+    <ClInclude Include="model_config.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="tempdispatcher.hpp" />
+    <ClInclude Include="tsqueue.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\TensorRT-7.2.2.3\samples\common\logger.cpp" />
+    <ClCompile Include="DL.cpp" />
+    <ClCompile Include="dnn_impl.cpp" />
+    <ClCompile Include="dnn_module_onnx.cpp" />
+    <ClCompile Include="dnn_module_tensorrt.cpp" />
+    <ClCompile Include="dnn_module_torch.cpp" />
+    <ClCompile Include="json\jsoncpp.cpp" />
+    <ClCompile Include="logdispatcher.cpp" />
+    <ClCompile Include="logmanager.cpp" />
+    <ClCompile Include="logsender.cpp" />
+    <ClCompile Include="logwriter.cpp" />
+    <ClCompile Include="model_config.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 11.2.targets" />
+    <Import Project="..\packages\Microsoft.ML.OnnxRuntime.Gpu.1.7.1\build\native\Microsoft.ML.OnnxRuntime.Gpu.targets" Condition="Exists('..\packages\Microsoft.ML.OnnxRuntime.Gpu.1.7.1\build\native\Microsoft.ML.OnnxRuntime.Gpu.targets')" />
+  </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>이 프로젝트는 이 컴퓨터에 없는 NuGet 패키지를 참조합니다. 해당 패키지를 다운로드하려면 NuGet 패키지 복원을 사용하십시오. 자세한 내용은 http://go.microsoft.com/fwlink/?LinkID=322105를 참조하십시오. 누락된 파일은 {0}입니다.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.ML.OnnxRuntime.Gpu.1.7.1\build\native\Microsoft.ML.OnnxRuntime.Gpu.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ML.OnnxRuntime.Gpu.1.7.1\build\native\Microsoft.ML.OnnxRuntime.Gpu.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.ML.OnnxRuntime.Gpu.1.7.1\build\native\Microsoft.ML.OnnxRuntime.Gpu.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ML.OnnxRuntime.Gpu.1.7.1\build\native\Microsoft.ML.OnnxRuntime.Gpu.targets'))" />
+  </Target>
+</Project>

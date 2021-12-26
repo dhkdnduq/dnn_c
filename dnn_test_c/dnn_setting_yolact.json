@@ -1,0 +1,14 @@
+{
+  "common": {
+    "model_path": "D:\\visual_code\\dnn_test_c\\dnn_test_c\\dnn_test_c\\yolact.onnx",
+    "width": "550",
+    "height": "550",
+    "chn": "3",
+    "scale_div": "1",
+    "mean_sub_enable": "true",
+    "mean": "103.94, 116.78, 123.68",
+    "std": "57.38, 57.12, 58.4",
+    "threshold": "0.3",
+    "batchsize": "1"
+  }
+}

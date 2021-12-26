@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="messaging">
+      <UniqueIdentifier>{faf7a059-6805-48e8-ab3a-d4136df4e8f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="log">
+      <UniqueIdentifier>{3e10d8ab-59c5-4b09-84cf-3cfd5053d847}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="release">
+      <UniqueIdentifier>{4f590903-7c60-4fe9-a0b6-2b22923f55db}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="model_config.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="json\json\json-forwards.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="json\json\json.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="dnn_module_tensorrt.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\TensorRT-7.2.2.3\samples\common\logger.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="dnn_module_torch.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="dnn_module_onnx.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="structure.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="dnn_impl.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="dnn_base.hpp">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="dispatcher.hpp">
+      <Filter>messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="tsqueue.hpp">
+      <Filter>messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="msgstructure.h">
+      <Filter>messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="tempdispatcher.hpp">
+      <Filter>messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="receiver.hpp">
+      <Filter>messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="sender.hpp">
+      <Filter>messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="logwriter.h">
+      <Filter>log</Filter>
+    </ClInclude>
+    <ClInclude Include="lookup_table.hpp">
+      <Filter>messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="DL.h">
+      <Filter>release</Filter>
+    </ClInclude>
+    <ClInclude Include="logsender.h">
+      <Filter>log</Filter>
+    </ClInclude>
+    <ClInclude Include="logmanager.h">
+      <Filter>log</Filter>
+    </ClInclude>
+    <ClInclude Include="logdispatcher.h">
+      <Filter>log</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="model_config.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="json\jsoncpp.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="dnn_module_tensorrt.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\TensorRT-7.2.2.3\samples\common\logger.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="dnn_module_torch.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="dnn_module_onnx.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="dnn_impl.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="logwriter.cpp">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="DL.cpp">
+      <Filter>release</Filter>
+    </ClCompile>
+    <ClCompile Include="logsender.cpp">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="logmanager.cpp">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="logdispatcher.cpp">
+      <Filter>log</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\win-x64\native\onnxruntime.dll" />
+  </ItemGroup>
+</Project>

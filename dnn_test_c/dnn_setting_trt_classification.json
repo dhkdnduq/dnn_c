@@ -1,0 +1,10 @@
+{
+  "common": {
+    "model_path": "mobile.onnx",
+    "scale_div": "255",
+    "mean_sub_enable": "false",
+    "mean": "103.94, 116.78, 123.68",
+    "std": "57.38, 57.12, 58.4",
+    "batchsize": "216",
+  }
+}
