@@ -2,7 +2,7 @@
 #include "dnn_module_tensorrt.h"
 #include <opencv2/cudaarithm.hpp>
 #include "opencv2/cudawarping.hpp"
-
+#include "calibrator.hpp"
 const std::string gLoggerName = "TensorRT.DNN";
 auto log_ = gLogger.defineTest(gLoggerName, 0, nullptr);
   
@@ -177,15 +177,33 @@ bool dnn_module_tensorrt::build() {
   }
 
   config->addOptimizationProfile(profile);
-
+  
   ifstream engineFile(mEngineName, ios::binary);
   if (engineFile) {
     mEngine = std::shared_ptr<nvinfer1::ICudaEngine>(
         loadEngine(mEngineName, -1), samplesCommon::InferDeleter());
   } else {
+    // calibration
+    if (cfg_.fp16) {
+      config->setFlag(BuilderFlag::kFP16);
+    }
+    std::unique_ptr<Int8EntropyCalibrator> calibrator;
+      
+    if (cfg_.int8) {
+      config->setFlag(BuilderFlag::kINT8);
+      config->setCalibrationProfile(profile);
+      string imgpath = "test";
+      auto calibration_images =  Int8EntropyCalibrator::getCalibrationFiles(imgpath);
+      ImageStream stream(cfg_.batchSize, input_dims, calibration_images);
+      calibrator = std::unique_ptr<Int8EntropyCalibrator>( new Int8EntropyCalibrator(stream, cfg_.modelFileName,cfg_.modelFileName+"_clb"));
+      config->setInt8Calibrator(calibrator.get());
+    }
+
+
     mEngine = std::shared_ptr<nvinfer1::ICudaEngine>(
         builder->buildEngineWithConfig(*network, *config),
         samplesCommon::InferDeleter());
+   
     if (!mEngine) {
       return false;
     }
@@ -197,9 +215,6 @@ bool dnn_module_tensorrt::build() {
   assert(network->getNbInputs() == 1);
   mInputDims = network->getInput(0)->getDimensions();
   assert(mInputDims.nbDims == 4);
-
-  // Create RAII buffer manager object
-  auto bex = mEngine->hasImplicitBatchDimension();
 
   buffers = std::shared_ptr<samplesCommon::BufferManager>(
       new samplesCommon::BufferManager(mEngine, 0));
@@ -250,20 +265,12 @@ bool dnn_module_tensorrt::constructNetwork(
 
   // const char * test = network->getOutput(0)->getName();
 
-  // Attach a softmax layer to the end of the network.
-  // auto softmax = network->addSoftMax(*network->getOutput(0));
-
   builder->setMaxBatchSize(cfg_.batchSize);
+#ifdef INCREASE_STACK_SIZE
   config->setMaxWorkspaceSize(3_GiB);
-
-  if (cfg_.fp16) {
-    config->setFlag(BuilderFlag::kFP16);
-  }
-  if (cfg_.int8) {
-    config->setFlag(BuilderFlag::kINT8);
-    //samplesCommon::setAllTensorScales(network.get(), 127.0f, 127.0f);
-  }
-
+#else
+  config->setMaxWorkspaceSize(1_GiB);
+#endif
   samplesCommon::enableDLA(builder.get(), config.get(), cfg_.dlaCore);
 
   return true;
@@ -316,7 +323,6 @@ int dnn_module_tensorrt::verifyYolov5(const samplesCommon::BufferManager& buffer
  25200 is the combined layer of preliminary output layers that are 20x20, 40x40,
  80x80(with the default 3 scales P3, P4, P5 model) and 3 anchors
  (20 ^ 2 + 40 ^ 2 + 80 ^ 2)* 3 = 25200 You can see those 3 layers in netron.  */
-  this;
   float* prediction = static_cast<float*>( buffers.getHostBuffer(outputNames[0]));  //([1, 25200, 4])
 
   return dnn_impl::predict_yolov5(this->cfg_, prediction,mOutputDims[0].d[1],mOutputDims[0].d[2],ori_image_buffer,rst_container);
