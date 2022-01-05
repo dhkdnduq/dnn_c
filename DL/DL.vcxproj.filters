@@ -105,6 +105,12 @@
     <ClInclude Include="perf_timer.hpp">
       <Filter>log</Filter>
     </ClInclude>
+    <ClInclude Include="cuda\utils.h">
+      <Filter>cuda</Filter>
+    </ClInclude>
+    <ClInclude Include="cuda\nms_iou.h">
+      <Filter>cuda</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -150,5 +156,10 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\win-x64\native\onnxruntime.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="cuda\nms_iou.cu">
+      <Filter>cuda</Filter>
+    </CudaCompile>
   </ItemGroup>
 </Project>
