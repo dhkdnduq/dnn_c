@@ -75,7 +75,7 @@ int dnn_module_tensorrt::predict_yolact(segm_t_container_rst_list& rst_container
 }
 void dnn_module_tensorrt::nhwc_from_images(float* dst) {
   auto buffers = get_preprocess_image_buffers();
-  nhwc_blob_from_images(buffers, dst);
+  nhwc_blob_from_images(buffers, dst);  
 }
 
 void dnn_module_tensorrt::nchw_from_images(float* dst) {
@@ -188,13 +188,12 @@ bool dnn_module_tensorrt::build() {
       config->setFlag(BuilderFlag::kFP16);
     }
     std::unique_ptr<Int8EntropyCalibrator> calibrator;
-      
     if (cfg_.int8) {
       config->setFlag(BuilderFlag::kINT8);
       config->setCalibrationProfile(profile);
       string imgpath = "test";
       auto calibration_images =  Int8EntropyCalibrator::getCalibrationFiles(imgpath);
-      ImageStream stream(cfg_.batchSize, input_dims, calibration_images);
+      ImageStream stream(cfg_, input_dims, calibration_images);
       calibrator = std::unique_ptr<Int8EntropyCalibrator>( new Int8EntropyCalibrator(stream, cfg_.modelFileName,cfg_.modelFileName+"_clb"));
       config->setInt8Calibrator(calibrator.get());
     }
