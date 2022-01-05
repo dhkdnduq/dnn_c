@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="소스 파일">
@@ -21,6 +21,12 @@
     </Filter>
     <Filter Include="release">
       <UniqueIdentifier>{4f590903-7c60-4fe9-a0b6-2b22923f55db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda">
+      <UniqueIdentifier>{e0b287a3-4a00-429a-8ca8-6257fa369bc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="calibration">
+      <UniqueIdentifier>{ef5d4786-bc16-4ab9-a99b-99583b7f59d2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -46,9 +52,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="dnn_module_onnx.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="structure.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="dnn_impl.h">
@@ -93,6 +96,15 @@
     <ClInclude Include="logdispatcher.h">
       <Filter>log</Filter>
     </ClInclude>
+    <ClInclude Include="calibrator.hpp">
+      <Filter>calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="structure.h">
+      <Filter>release</Filter>
+    </ClInclude>
+    <ClInclude Include="perf_timer.hpp">
+      <Filter>log</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -122,9 +134,6 @@
     <ClCompile Include="logwriter.cpp">
       <Filter>log</Filter>
     </ClCompile>
-    <ClCompile Include="DL.cpp">
-      <Filter>release</Filter>
-    </ClCompile>
     <ClCompile Include="logsender.cpp">
       <Filter>log</Filter>
     </ClCompile>
@@ -133,6 +142,9 @@
     </ClCompile>
     <ClCompile Include="logdispatcher.cpp">
       <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="DL.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
