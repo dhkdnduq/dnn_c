@@ -3,7 +3,7 @@
 #include "opencv2/opencv.hpp"
 #include "dnn_base.hpp"
 #include "logmanager.h"
-
+#include "perf_timer.hpp"
 
 using namespace cv;
 static dnn_base<dnn_module_torch> dl_torch1;
@@ -12,35 +12,6 @@ static dnn_base<dnn_module_torch> dl_torch2;
 static dnn_base<dnn_module_tensorrt> dl_trt2;
 static logmanager log_instance;
 
-/*
-auto total  = perf_timer<std::chrono::milliseconds>::duration([&](){ batch_size = dl_trt->predict_category_classification(rst_list); } ).count();
- std::cout << total << std::endl;
-*/
-    
-template <typename Time = std::chrono::milliseconds, typename Clock = std::chrono::high_resolution_clock>
-struct perf_timer {
-  template <typename F, typename... Args>
-  static Time duration(F&& f, Args... args) {
-    auto start = Clock::now();
-
-    std::invoke(std::forward<F>(f), std::forward<Args>(args)...);
-
-    auto end = Clock::now();
-
-    return std::chrono::duration_cast<Time>(end - start);
-  };
-  template <typename F, typename... Args>
-  static void duration_p(F&& f, Args... args) {
-    auto start = Clock::now();
-
-    std::invoke(std::forward<F>(f), std::forward<Args>(args)...);
-
-    auto end = Clock::now();
-
-    cout << std::chrono::duration_cast<Time>(end - start).count() << endl;
-  };
- 
-};
 
 void release_image_info(image_info& info) {
   info.clear();
