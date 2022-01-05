@@ -12,6 +12,36 @@ static dnn_base<dnn_module_torch> dl_torch2;
 static dnn_base<dnn_module_tensorrt> dl_trt2;
 static logmanager log_instance;
 
+/*
+auto total  = perf_timer<std::chrono::milliseconds>::duration([&](){ batch_size = dl_trt->predict_category_classification(rst_list); } ).count();
+ std::cout << total << std::endl;
+*/
+    
+template <typename Time = std::chrono::milliseconds, typename Clock = std::chrono::high_resolution_clock>
+struct perf_timer {
+  template <typename F, typename... Args>
+  static Time duration(F&& f, Args... args) {
+    auto start = Clock::now();
+
+    std::invoke(std::forward<F>(f), std::forward<Args>(args)...);
+
+    auto end = Clock::now();
+
+    return std::chrono::duration_cast<Time>(end - start);
+  };
+  template <typename F, typename... Args>
+  static void duration_p(F&& f, Args... args) {
+    auto start = Clock::now();
+
+    std::invoke(std::forward<F>(f), std::forward<Args>(args)...);
+
+    auto end = Clock::now();
+
+    cout << std::chrono::duration_cast<Time>(end - start).count() << endl;
+  };
+ 
+};
+
 void release_image_info(image_info& info) {
   info.clear();
 }
@@ -105,11 +135,10 @@ bool trt_init(const char* configurationFilename, int gpu) {
 int trt_category_classification(category_rst_list& rst_list, int gpu ,bool is_clear_buffer) {
   rst_list.clear();
   auto dl_trt = gpu == 0 ? dl_trt1.func() : dl_trt2.func();
-  //dl_trt->start_timer();
-  int batch_size = dl_trt->predict_category_classification(rst_list);
+  int batch_size;
+  perf_timer<std::chrono::milliseconds>::duration_p([&](){ batch_size = dl_trt->predict_category_classification(rst_list); });
   if (is_clear_buffer) dl_trt->clear_buffer();
   rst_list.cnt = batch_size;
-  // dl_trt->end_timer();
   return batch_size;
 }
 int trt_yolov5(bbox_t_container_rst_list & rst_list, int gpu ,bool is_clear_buffer) {
