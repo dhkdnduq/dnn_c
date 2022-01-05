@@ -6,8 +6,9 @@ Don't use Python for performance.
 * [TensorRT](https://github.com/NVIDIA/TensorRT) >= v8.2 (for yolov5)
 * [Opencv(cuda,dnn,..)](https://github.com/opencv/opencv) >= v4.5
 * c++ >= v14
-* [libtorch](https://pytorch.org/) >= v1.7.1+
+* [libtorch](https://pytorch.org/) >= v1.7.1
 * [torchvision](https://github.com/pytorch/vision/releases) 
+* [cuda](https://developer.nvidia.com/cuda-toolkit) >= v11.2 
 
 ## Distribution
 * dl.h 
