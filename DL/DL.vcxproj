@@ -141,6 +141,13 @@
       <AdditionalLibraryDirectories>D:\visual_code\TensorRT-8.2.0.6\lib;D:\visual_code\libtorch-win-shared-with-deps-debug-1.7.1+cu110\libtorch;D:\opencv-4.5.1\build\lib\Debug;D:\vision-0.8.2\build\Debug;D:\visual_code\libtorch-win-shared-with-deps-debug-1.7.1+cu110\libtorch\lib\;D:\visual_code\dnn_test_c\dnn_test_c\packages\Microsoft.ML.OnnxRuntime.Gpu.1.7.1\runtimes\win-x64\native;D:\python-3.8.5\libs\python38_d.lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>D:\visual_code\libtorch-win-shared-with-deps-debug-1.7.1+cu110\libtorch\lib\c10.lib;D:\visual_code\libtorch-win-shared-with-deps-debug-1.7.1+cu110\libtorch\lib\caffe2_nvrtc.lib;D:\visual_code\libtorch-win-shared-with-deps-debug-1.7.1+cu110\libtorch\lib\c10_cuda.lib;D:\visual_code\libtorch-win-shared-with-deps-debug-1.7.1+cu110\libtorch\lib\torch.lib;D:\visual_code\libtorch-win-shared-with-deps-debug-1.7.1+cu110\libtorch\lib\torch_cuda.lib;D:\visual_code\libtorch-win-shared-with-deps-debug-1.7.1+cu110\libtorch\lib\torch_cpu.lib;-INCLUDE:?warp_size@cuda@at@@YAHXZ;opencv_world451d.lib;myelin64_1.lib;nvinfer.lib;nvinfer_plugin.lib;nvonnxparser.lib;nvparsers.lib;cuda.lib;cudnn.lib;cudart.lib;D:\vision-0.8.2\build\Debug\torchvision.lib;onnxruntime.lib;D:\python-3.8.5\libs\python38_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <CudaCompile>
+      <FastMath>true</FastMath>
+      <AdditionalCompilerOptions>
+      </AdditionalCompilerOptions>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <CodeGeneration>compute_86,sm_86</CodeGeneration>
+    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -168,6 +175,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\TensorRT-7.2.2.3\samples\common\logger.h" />
+    <ClInclude Include="calibrator.hpp" />
+    <ClInclude Include="cuda\nms_iou.h" />
+    <ClInclude Include="cuda\utils.h" />
     <ClInclude Include="dispatcher.hpp" />
     <ClInclude Include="DL.h" />
     <ClInclude Include="dnn_impl.h" />
@@ -181,6 +191,7 @@
     <ClInclude Include="logwriter.h" />
     <ClInclude Include="lookup_table.hpp" />
     <ClInclude Include="msgstructure.h" />
+    <ClInclude Include="perf_timer.hpp" />
     <ClInclude Include="receiver.hpp" />
     <ClInclude Include="sender.hpp" />
     <ClInclude Include="structure.h" />
@@ -213,6 +224,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="cuda\nms_iou.cu" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
