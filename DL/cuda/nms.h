@@ -8,4 +8,4 @@ int nms(int batchSize, const void *const *inputs, void *const *outputs,
         size_t workspace_size, cudaStream_t stream);
 
 }
-}  // namespace odtk
+}  // namespace dnn
