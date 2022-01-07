@@ -13,25 +13,6 @@ using namespace std;
 
 class  dnn_module_torch : public dnn_impl
 {
-
- private:
-
-  torch::jit::script::Module module_;
-  torch::jit::script::Module module_backbone;
-  static c10::DeviceType default_dev;
-  
-  //for anomaly  
-  vision::models::WideResNet50_2 module_wideresnet_50_;
-
-  vector<torch::Tensor> anomaly_feature_patchcore;
-  torch::Tensor anomaly_conv_inv;
-  torch::Tensor anomaly_mean_inv;
-  torch::Tensor anomaly_rand_index;
-
-  cv::cuda::GpuMat anomaly_mean_mat;
-  vector<cv::cuda::GpuMat> anomaly_conv_inv_mat;
-  static bool isinit_;
-  static vector<torch::Tensor> mask_colors;
  private:
  
   void loadlibrary();
@@ -66,4 +47,21 @@ class  dnn_module_torch : public dnn_impl
                           int output_dim2_size,vector<cv::Mat>& origin_image,
                           bbox_t_container_rst_list& rst_containert);
   static void nhwc_blob_from_images(vector<cv::Mat> buffers, float* hostDataBuffer);
+
+  private:
+  torch::jit::script::Module module_;
+  torch::jit::script::Module module_backbone;
+  static c10::DeviceType default_dev;
+  // for anomaly
+  vision::models::WideResNet50_2 module_wideresnet_50_;
+
+  vector<torch::Tensor> anomaly_feature_patchcore;
+  torch::Tensor anomaly_conv_inv;
+  torch::Tensor anomaly_mean_inv;
+  torch::Tensor anomaly_rand_index;
+
+  cv::cuda::GpuMat anomaly_mean_mat;
+  vector<cv::cuda::GpuMat> anomaly_conv_inv_mat;
+  static bool isinit_;
+  static vector<torch::Tensor> mask_colors;
 };
