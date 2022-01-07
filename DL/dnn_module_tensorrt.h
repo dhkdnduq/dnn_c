@@ -27,29 +27,12 @@ private:
   ~dnn_module_tensorrt();
 
  protected:
-
-
   void nchw_from_images(float* dst);
   void nhwc_from_images(float* dst);
   void blob_from_images(float* dst);
-  //!
-  //! \brief Function builds the network engine
-  //!
   bool build();
 
-
  private:
- 
-
-  nvinfer1::Dims mInputDims;  //!< The dimensions of the input to the network.
-  vector<nvinfer1::Dims>  mOutputDims;  //!< The dimensions of the output to the network.
-  shared_ptr<nvinfer1::ICudaEngine>  mEngine;  //!< The TensorRT engine used to run the network
-  shared_ptr<samplesCommon::BufferManager> buffers;
-  TRTUniquePtr<nvinfer1::IExecutionContext> context;
-  string inputName;
-  string mEngineName;
-  vector<string> outputNames;
- 
   bool constructNetwork(TRTUniquePtr<nvinfer1::IBuilder>& builder,
                         TRTUniquePtr<nvinfer1::INetworkDefinition>& network,
                         TRTUniquePtr<nvinfer1::IBuilderConfig>& config,
@@ -64,11 +47,18 @@ private:
   ICudaEngine* loadEngine(const std::string& fileName, int DLACore);
 	 
 public:
-	
- 
 	virtual bool load_model(string configpath);
 	int predict_category_classification(category_rst_list& rst_list);
   int predict_yolact(segm_t_container_rst_list& rst_container);
   int predict_yolov5(bbox_t_container_rst_list& rst_container);
 
+ private:
+  nvinfer1::Dims mInputDims;  //!< The dimensions of the input to the network.
+  vector<nvinfer1::Dims>  mOutputDims;  //!< The dimensions of the output to the network.
+  shared_ptr<nvinfer1::ICudaEngine>  mEngine;  //!< The TensorRT engine used to run the network
+  shared_ptr<samplesCommon::BufferManager> buffers;
+  TRTUniquePtr<nvinfer1::IExecutionContext> context;
+  string inputName;
+  string mEngineName;
+  vector<string> outputNames;
 };
