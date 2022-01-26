@@ -18,7 +18,7 @@ Don't use Python for performance.
 ## Setting
 * include (dl.h  , structure.h)
 * link *.dll 
-* If you need a large stack vs project->linker->system->stack reserve size: >=10485760  & structure.h change  MAX_BATCH_SIZE 10-> x 
+* If you need a large stack vs project->linker->system->stack reserve size: >=10485760  & structure.h change  MAX_BATCH_SIZE 10-> As big as the batch size
 
 
 ## Usage 
