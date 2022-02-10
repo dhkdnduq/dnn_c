@@ -1,46 +1,29 @@
 {
   "common": {
-    "model_path": "anomaly_model.pt",
-    "width": "224",
-    "height": "224",
-    "det_output_width": "1024",
-    "det_output_height": "1024",
+    "model_path": "patchcore_model_bmw.pt",
+    "width": "112",
+    "height": "112",
     "chn": "3",
     "scale_div": "255",
-    "mean_sub_enable": "false",
-    "mean": "103.94, 116.78, 123.68",
-    "std": "57.38, 57.12, 58.4",
-    "threshold": "0.2",
-    "classnum": "7",
-    "input_layer": "mobilenetv2_1.00_224_input",
-    "output_layer": "dense_1",
-    "is_nhwc": "true",
-    "batchsize": "4"
+    "mean_sub_enable": "true",
+    "mean": "0.485,0.456,0.406",
+    "std": "0.229,0.224,0.225",
+    "batchsize": "46"
   },
-  "yolact": {
-    "fp16": "false",
-    "loc_name": "792",
-    "conf_name": "801",
-    "mask_name": "794",
-    "priors_name": "992",
-    "proto_name": "596",
-    "max_size": "550",
-    "min_size": "200",
-    "classnum": "81"
-  },
-  
   "anomaly": {
     "enable": "true",
-    "features": "anomaly_features.pt",
-    "max_score": "32",
-    "min_score": "7"
-  },
-  
-  "darknet": {
-    "enable": "false",
-    "weights": "yolov3_last.weights",
-    "cfg": "yolov3_test.cfg",
-    "class": "classes.names",
-    "threshod": "0.2"
+    "features": [
+      {
+        "defect_extraction": {
+          "enable": "true",
+          "threshold": "0.9",
+          "judge_area_ratio": "0.18"
+        },
+        "feature": "patchcore_features_bmw.pt",
+        "max_score": "3.13",
+        "min_score": "0.0",
+        "threshold": "2.0"
+      }
+    ]
   }
 }
