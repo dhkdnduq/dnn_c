@@ -1,28 +1,36 @@
 {
   "common": {
-    "model_path": "patchcore_model_bmw.pt",
-    "width": "112",
-    "height": "112",
+    "model_path": "patchcore_model_time.pt",
+    "width": "144",
+    "height": "144",
     "chn": "3",
     "scale_div": "255",
     "mean_sub_enable": "true",
     "mean": "0.485,0.456,0.406",
     "std": "0.229,0.224,0.225",
-    "batchsize": "1"
+    "batchsize": "3"
   },
   "anomaly": {
     "enable": "true",
+    "order_of_feature_index_to_batch": "0,1,2",
     "features": [
       {
-        "defect_extraction": {
-          "enable": "true",
-          "threshold": "0.9",
-          "judge_area_ratio": "0.18"
-        },
-        "feature": "patchcore_features_bmw.pt",
-        "max_score": "3.13",
+        "feature": "HEX_DOWN_TEMP_feature.pt",
+        "max_score": "3.0",
         "min_score": "0.0",
-        "threshold": "2.0"
+        "threshold": "1.5"
+      },
+      {
+        "feature": "HEX_UP_TEMP_feature.pt",
+        "max_score": "3.0",
+        "min_score": "0.0",
+        "threshold": "1.5"
+      },
+      {
+        "feature": "HIGH_PRESSURE_feature.pt",
+        "max_score": "3.0",
+        "min_score": "0.0",
+        "threshold": "1.5"
       }
     ]
   }
