@@ -6,14 +6,8 @@
 #include "opencv2/opencv.hpp"
 
 class  dnn_impl {
- private:
  
  protected:
-  vector<cv::Mat> ori_image_buffer;
-  vector<cv::Mat> preprocess_image_buffer;
-
-  model_config cfg_;
-
   void gen_dl_image(cv::Mat frame);
  
   vector<cv::Mat>& get_origin_image_buffers() { return ori_image_buffer; }
@@ -38,7 +32,7 @@ class  dnn_impl {
   bool add_image(const cv::Mat data);
   bool add_image(unsigned char* buf, const size_t data_length);
 
-  //multi thread »ç¿ë½Ã lock ÇÊ¿ä 
+  //multi thread ì‚¬ìš©ì‹œ lock í•„ìš” 
   static int predict_yolact(model_config& cfg, float* loc_name,
                               float* conf_name, float* mask_name,
                               float* priors_name, float* proto_name,int class_num,
@@ -48,28 +42,11 @@ class  dnn_impl {
                             bbox_t_container_rst_list& rst_container);
 
   static void nhwc_blob_from_images(vector<cv::Mat> buffers,float* hostDataBuffer);
-    
 
-    
-    template <typename Time = std::chrono::milliseconds, typename Clock = std::chrono::high_resolution_clock>
-    struct perf_timer {
-    template <typename F, typename... Args>
-    static double duration(F&& f, Args... args) {
-     
-    }
-  };
-    template <typename Time = std::chrono::microseconds,
-              typename Clock = std::chrono::high_resolution_clock,
-              typename F,
-              typename... Args>
-  void duration(F&& f, Args... args){
-    auto start = Clock::now();
-    std::invoke(std::forward<F>(f), std::forward<Args>(args)...);
-    auto end = Clock::now();
-    double time = std::chrono::duration_cast<Time>(end - start).count();
-    cout << "tack time(ms) :" << time << endl;
-  
-  };
+  protected:
+  vector<cv::Mat> ori_image_buffer;
+  vector<cv::Mat> preprocess_image_buffer;
 
+  model_config cfg_;
 };
 
