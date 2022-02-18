@@ -49,7 +49,7 @@ void dnn_impl::gen_dl_image(cv::Mat frame) {
        int channel = flt_image.channels();
        // subtract mean
        vector<cv::cuda::GpuMat> img_channels;
-       if (cfg_.mean_sub_enable) {
+       if (cfg_.is_use_mean_sub) {
          cv::cuda::GpuMat subtract, divide;
          cv::cuda::subtract(
              flt_image, cv::Scalar(cfg_.mean[2], cfg_.mean[1], cfg_.mean[0]),
@@ -119,7 +119,7 @@ void dnn_impl::matToImageinfo(cv::Mat src, image_info& imInfo) {
   imInfo.gen(buf);
  
  }
-//trt에서 사용시 torch 헤더가 충돌남
+
 int  dnn_impl::predict_yolact(model_config& cfg, float* loc_name,
   float* conf_name, float* mask_name,
   float* priors_name, float* proto_name,int class_num,
