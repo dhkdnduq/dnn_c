@@ -5,42 +5,10 @@
     "height": "896",
     "det_output_width": "1024",
     "det_output_height": "1024",
-    "chn": "3",
     "scale_div": "255",
     "mean_sub_enable": "false",
     "mean": "103.94, 116.78, 123.68",
     "std": "57.38, 57.12, 58.4",
-    "threshold": "0.2",
-    "classnum": "7",
-    "input_layer": "mobilenetv2_1.00_224_input",
-    "output_layer": "dense_1",
-    "is_nhwc": "true",
-    "batchsize": "4"
-  },
-  "yolact": {
-    "fp16": "false",
-    "loc_name": "792",
-    "conf_name": "801",
-    "mask_name": "794",
-    "priors_name": "992",
-    "proto_name": "596",
-    "max_size": "550",
-    "min_size": "200",
-    "classnum": "81"
-  },
-  
-  "anomaly": {
-    "enable": "false",
-    "features": "anomaly_features.pt",
-    "max_score": "32",
-    "min_score": "7"
-  },
-  
-  "darknet": {
-    "enable": "false",
-    "weights": "yolov3_last.weights",
-    "cfg": "yolov3_test.cfg",
-    "class": "classes.names",
-    "threshod": "0.2"
+    "batchsize": "1"
   }
 }
