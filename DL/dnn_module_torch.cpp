@@ -34,81 +34,12 @@ void dnn_module_torch::load_anomaly_detection_patchcore() {
   module_wideresnet_50_->eval();
   module_wideresnet_50_->to(at::kCUDA);
 
-  for (int i = 0; i < cfg_.vanomaly.size(); i++) {
-    auto anomaly_features = torch::jit::load(cfg_.vanomaly[i].anomalyFeatureFileName);
+  for (int i = 0; i < cfg_.anomaly_feature.size(); i++) {
+    auto anomaly_features = torch::jit::load(cfg_.anomaly_feature[i].anomalyFeatureFileName);
     anomaly_feature_patchcore.push_back(anomaly_features.attr("feature").toTensor().to(at::kCUDA));
+    cfg_.anomaly_feature[i].batch_idx = i;
   }
 }
-
-void dnn_module_torch::load_anomaly_detection_padim() {
-
-  anomaly_rand_index =
-      torch::tensor(
-          {39,   990,  797,  661,  1064, 205,  911,  1050, 749,  1478, 1466,
-           755,  795,  196,  1457, 287,  1533, 209,  838,  317,  893,  970,
-           913,  1504, 1075, 710,  1262, 1244, 180,  72,   171,  1303, 168,
-           1518, 741,  1411, 684,  6,    759,  616,  373,  276,  326,  796,
-           585,  329,  186,  469,  1193, 247,  941,  1396, 1150, 48,   1428,
-           840,  44,   43,   505,  1516, 683,  704,  944,  1250, 356,  1125,
-           1416, 872,  124,  137,  785,  201,  1221, 1492, 383,  438,  1445,
-           70,   1461, 1265, 1346, 676,  1496, 1480, 951,  1056, 1503, 1273,
-           742,  194,  525,  78,   142,  1222, 1495, 257,  1084, 994,  663,
-           868,  1473, 724,  159,  1189, 1008, 734,  1103, 350,  1446, 502,
-           1042, 1132, 1328, 860,  1455, 1045, 1009, 1341, 277,  17,   453,
-           633,  765,  305,  1147, 419,  220,  696,  524,  581,  978,  53,
-           689,  57,   1124, 784,  290,  1426, 927,  439,  198,  294,  323,
-           128,  1111, 1185, 1334, 11,   1211, 1295, 1475, 743,  999,  1283,
-           236,  426,  809,  926,  139,  1321, 447,  1292, 997,  515,  688,
-           961,  1370, 546,  1249, 884,  1338, 405,  1535, 832,  887,  565,
-           244,  643,  702,  846,  719,  1373, 1082, 1233, 29,   1036, 264,
-           571,  1240, 81,   746,  269,  512,  321,  260,  343,  573,  424,
-           184,  699,  870,  601,  457,  158,  230,  1069, 513,  1097, 632,
-           134,  30,   932,  826,  1335, 229,  278,  727,  1383, 804,  15,
-           853,  1063, 1209, 1080, 1322, 1347, 1312, 938,  1374, 851,  800,
-           77,   552,  772,  798,  358,  758,  852,  404,  473,  1349, 1200,
-           1085, 1153, 1315, 928,  506,  918,  397,  18,   297,  624,  620,
-           1263, 1452, 491,  478,  1399, 420,  352,  537,  686,  391,  202,
-           788,  285,  738,  902,  187,  674,  723,  415,  1039, 1385, 679,
-           318,  470,  1146, 712,  576,  237,  769,  602,  210,  1010, 963,
-           1016, 75,   618,  924,  1166, 598,  231,  189,  71,   1038, 441,
-           1511, 80,   708,  395,  874,  917,  412,  611,  1459, 1237, 522,
-           340,  543,  328,  262,  1531, 233,  195,  50,   623,  362,  1309,
-           622,  1391, 830,  1436, 726,  203,  677,  409,  1405, 678,  915,
-           22,   138,  135,  652,  1062, 1291, 1317, 774,  1141, 25,   488,
-           639,  371,  238,  1021, 507,  614,  1251, 775,  781,  754,  1456,
-           1180, 1184, 149,  812,  1293, 1499, 1177, 84,   1313, 199,  922,
-           1513, 1234, 834,  1403, 1241, 820,  109,  204,  1376, 850,  564,
-           122,  863,  1401, 845,  1484, 251,  605,  1501, 494,  19,   408,
-           815,  106,  980,  792,  273,  402,  208,  1489, 808,  151,  435,
-           271,  898,  716,  1362, 575,  1421, 780,  1521, 1173, 1188, 1483,
-           971,  331,  957,  909,  1408, 1176, 1192, 480,  206,  1169, 1414,
-           1410, 308,  770,  617,  418,  544,  720,  490,  1398, 1,    866,
-           1353, 510,  1212, 92,   163,  1044, 1255, 973,  875,  1149, 1005,
-           1034, 590,  99,   956,  1468, 154,  1487, 862,  1055, 756,  1225,
-           931,  709,  1469, 539,  527,  958,  13,   166,  1381, 722,  1306,
-           1182, 514,  744,  211,  1266, 1435, 879,  1130, 153,  1099, 985,
-           659,  561,  1524, 299,  1413, 1438, 818,  444,  1519, 1454, 1114,
-           914,  1159, 1419, 1135, 1390, 1384, 252,  595,  669,  603,  787,
-           1178, 232,  217,  1143, 873,  1332, 500,  442,  965,  1325, 1345,
-           487,  825,  1195, 570,  908,  1366, 916,  460,  691,  493,  449,
-           718,  1357, 554,  849,  152,  357,  1228, 1131, 385,  1339, 778,
-           250,  311,  881,  88,   1013, 458,  653,  1382, 1174, 416,  621,
-           332,  1333, 856,  1285, 372,  566,  1018, 976,  178,  1242, 376})
-          .to(at::kCUDA);
-
-  int max_count = omp_get_max_threads();
-  omp_set_num_threads(max_count);
-
-  torch::load(module_wideresnet_50_, cfg_.modelFileName);
-  module_wideresnet_50_->eval();
-  module_wideresnet_50_->to(at::kCUDA);
-  anomaly_feature_patchcore.clear();
-  auto anomaly_features = torch::jit::load(cfg_.vanomaly[0].anomalyFeatureFileName);
-  anomaly_mean_inv = anomaly_features.attr("mean").toTensor().to(at::kCPU);
-  anomaly_conv_inv = anomaly_features.attr("conv_inv").toTensor().to(at::kCPU);
- 
-}
-
 
  void dnn_module_torch::loadlibrary() {
   if (!isinit_) {
@@ -378,7 +309,6 @@ std::vector<torch::jit::IValue> dnn_module_torch::get_inputs() {
         auto size = frame.size();
         auto nChannels = frame.channels();
         auto tensor = torch::from_blob(frame.data,  {1, size.height, size.width,nChannels });
-        //문제 될 시 contiguous(). 추가 , contiguous() 추가 할 시 input->mat 에서 문제 생김
         inputs_vec.emplace_back(tensor.permute({0, 3, 1, 2}).contiguous().to(at::kCUDA));
        
     } catch (const c10::Error& e) {
@@ -460,11 +390,9 @@ torch::Tensor dnn_module_torch::mahalanobis(torch::Tensor u, torch::Tensor v,
  
 
 }
-int dnn_module_torch::predict_anomaly_detection_patchcore(segm_t_container_rst_list& rst_container, int category) 
+int dnn_module_torch::predict_anomaly_detection_patchcore(segm_t_container_rst_list& rst_container) 
 {
-  
   const int batchSize = cfg_.batchSize;
-  for (int batch_idx = 0; batch_idx < batchSize; batch_idx++) {
      try {
        auto distance_matix = [](torch::Tensor x, torch::Tensor features,
                                 int p = 2) -> torch::Tensor {
@@ -477,8 +405,7 @@ int dnn_module_torch::predict_anomaly_detection_patchcore(segm_t_container_rst_l
        };
 
        auto inputs = get_inputs();
-       auto input_tensor = inputs[batch_idx].toTensor();
-       auto x = module_wideresnet_50_->conv1->forward(input_tensor);
+       auto x = module_wideresnet_50_->conv1->forward(inputs[0].toTensor());
        x = module_wideresnet_50_->bn1->forward(x).relu_();
        x = torch::max_pool2d(x, 3, 2, 1);
 
@@ -494,177 +421,92 @@ int dnn_module_torch::predict_anomaly_detection_patchcore(segm_t_container_rst_l
 
        auto embedding_vectors = embedding_concat(embed1, embed2);
        //reshape_embedding
-       embedding_vectors.squeeze_();
-       embedding_vectors = embedding_vectors.reshape(
-           {embedding_vectors.size(0),
-            embedding_vectors.size(1) * embedding_vectors.size(2)});
-       embedding_vectors = embedding_vectors.permute({1, 0});
+      
+       for (int batch_idx = 0; batch_idx < batchSize; batch_idx++) 
+       {
+         int feature_idx = cfg_.order_of_feature_index_to_batch[batch_idx];; 
+         auto embedding_vector_batch = embedding_vectors[batch_idx];
 
-       int p = 2;
-       int k = 9;
-       //auto dist = torch::pow( distance_matix(embedding_vectors, anomaly_feature_patchcore[category], p), (1 / (float)p));
-       auto dist =  torch::cdist(embedding_vectors, anomaly_feature_patchcore[category], p);
-       auto knn = std::get<0>(dist.topk(k, -1, false));
-       int block_size =static_cast<int>(std::sqrt(knn.size(0)));
-       auto anomaly_map = knn.index({Slice(None, None), 0}).reshape({block_size, block_size});
-       double max_score = cfg_.vanomaly[category].anomalyMaxScore;
-       double min_score = cfg_.vanomaly[category].anomalyMinScore;
-       auto scores = (anomaly_map - min_score) / (max_score - min_score);
-       
-       auto scores_resized =
-           F::interpolate(
-               scores.unsqueeze(0).unsqueeze(0),
-               F::InterpolateFuncOptions()
-                   .size(std::vector<int64_t>{cfg_.dnn_height, cfg_.dnn_width})
-                   .align_corners(false)
-                   .mode(torch::kBilinear))
-               .squeeze()
-               .squeeze();
+         embedding_vector_batch = embedding_vector_batch.reshape(
+             {embedding_vector_batch.size(0),
+              embedding_vector_batch.size(1) * embedding_vectors.size(2)});
+         embedding_vector_batch = embedding_vector_batch.permute({1, 0});
+         int p = 2;
+         int k = 9;
+        
+         auto dist = torch::cdist(embedding_vector_batch,
+                                  anomaly_feature_patchcore[feature_idx], p);
+         auto knn = std::get<0>(dist.topk(k, -1, false));
+         int block_size = static_cast<int>(std::sqrt(knn.size(0)));
+         auto anomaly_map = knn.index({Slice(None, None), 0})
+                                .reshape({block_size, block_size});
+         double max_score = cfg_.anomaly_feature[feature_idx].anomalyMaxScore;
+         double min_score = cfg_.anomaly_feature[feature_idx].anomalyMinScore;
+         auto scores = (anomaly_map - min_score) / (max_score - min_score);
 
-        if (cfg_.vanomaly[category].defect_extraction_enable) {
-         auto anomal_index = scores_resized < cfg_.vanomaly[category].defect_extraction_threshold;
-         scores_resized.index_put_(anomal_index, torch::zeros(1).to(at::kCUDA));
-         cfg_.vanomaly[category].defect_extraction_jud_area_ratio;
+         auto scores_resized =
+             F::interpolate(scores.unsqueeze(0).unsqueeze(0),
+                            F::InterpolateFuncOptions()
+                                .size(std::vector<int64_t>{cfg_.dnn_height,
+                                                           cfg_.dnn_width})
+                                .align_corners(false)
+                                .mode(torch::kBilinear)).squeeze().squeeze();
+
+         if (cfg_.anomaly_feature[feature_idx].defect_extraction_enable) {
+           auto anomal_index =
+               scores_resized <
+               cfg_.anomaly_feature[feature_idx].defect_extraction_threshold;
+           scores_resized.index_put_(anomal_index,
+                                     torch::zeros(1).to(at::kCUDA));
+           cfg_.anomaly_feature[feature_idx].defect_extraction_jud_area_ratio;
+         }
+
+         auto anomaly_mat = tensor2dToMat(scores_resized.to(at::kCPU));
+
+         cv::Mat anomaly_colormap, anomaly_mat_scaled;
+         anomaly_mat.at<float>(0, 0) = 1;
+         anomaly_mat.convertTo(anomaly_mat_scaled, CV_8UC3, 255.f);
+
+         applyColorMap(anomaly_mat_scaled, anomaly_colormap, cv::COLORMAP_JET);
+         cv::Mat anomaly_mat_origin_size;
+         cv::resize(anomaly_colormap, anomaly_mat_origin_size,
+                    {cfg_.dnn_height, cfg_.dnn_width});
+         auto origin_mat = get_origin_image_buffers()[batch_idx];
+
+         cv::resize(origin_mat, anomaly_mat_origin_size,
+                    {cfg_.dnn_height, cfg_.dnn_width});
+         cv::Mat dst;
+         cv::addWeighted(anomaly_mat_origin_size, 0.5, anomaly_colormap,
+                         1 - 0.5, 0, dst);
+
+         segm_t_container& segm = rst_container[batch_idx];
+         segm.cnt = 1;
+         segm.candidates[0].prob = anomaly_map.mean().item<float>();
+         segm.candidates[0].obj_id =
+             anomaly_map.mean().item<float>() >   cfg_.anomaly_feature[feature_idx].anomalyThreshold ? false  : true;
+
+         if (cfg_.anomaly_feature[feature_idx].defect_extraction_enable) {
+           auto defect_area =  scores_resized >     cfg_.anomaly_feature[feature_idx].defect_extraction_threshold;
+           int defect_area_count = defect_area.count_nonzero().item<int>();
+           float defect_area_ratio =   defect_area_count / (float)(cfg_.dnn_height * cfg_.dnn_width);
+           segm.candidates[0].prob = defect_area_ratio;
+           segm.candidates[0].obj_id =     defect_area_ratio > cfg_.anomaly_feature[feature_idx].defect_extraction_jud_area_ratio   ? false : true;
+         }
+
+         matToImageinfo(anomaly_colormap, segm.display_image);
+
        }
-
-       auto anomaly_mat = tensor2dToMat(scores_resized.to(at::kCPU));
-
-       cv::Mat anomaly_colormap, anomaly_mat_scaled;
-       anomaly_mat.at<float>(0, 0) = 1;
-       anomaly_mat.convertTo(anomaly_mat_scaled, CV_8UC3, 255.f);
-
-       applyColorMap(anomaly_mat_scaled, anomaly_colormap, cv::COLORMAP_JET);
-       cv::Mat anomaly_mat_origin_size;
-       cv::resize(anomaly_colormap, anomaly_mat_origin_size, {cfg_.dnn_height, cfg_.dnn_width});
-       auto origin_mat = get_origin_image_buffers()[batch_idx];
-       
-       cv::resize(origin_mat, anomaly_mat_origin_size, {cfg_.dnn_height, cfg_.dnn_width});
-       cv::Mat dst;
-       cv::addWeighted(anomaly_mat_origin_size, 0.5, anomaly_colormap, 1 - 0.5, 0, dst);
-
-       segm_t_container& segm = rst_container[batch_idx];
-       segm.cnt = 1;
-       segm.candidates[0].prob = anomaly_map.mean().item<float>();
-       segm.candidates[0].obj_id = anomaly_map.mean().item<float>() > cfg_.vanomaly[category].anomalyThreshold ? false : true;
-      
-      if (cfg_.vanomaly[category].defect_extraction_enable) {
-         auto defect_area = scores_resized >  cfg_.vanomaly[category].defect_extraction_threshold;
-         int defect_area_count = defect_area.count_nonzero().item<int>();
-         float defect_area_ratio = defect_area_count / (float)(cfg_.dnn_height * cfg_.dnn_width);
-         segm.candidates[0].prob = defect_area_ratio;
-         segm.candidates[0].obj_id = defect_area_ratio > cfg_.vanomaly[category].defect_extraction_jud_area_ratio ? false : true;
-      }
-
-
-       matToImageinfo(anomaly_colormap, segm.display_image);
-      
      } catch (const c10::Error& e) {
        std::cout << e.msg() << endl;
        return false;
      }
-  }
+  
   rst_container.cnt = batchSize;
 
  
   return 0;
 }
-int dnn_module_torch::predict_anomaly_detection_padim(
-    segm_t_container_rst_list& rst_container, int category) {
-  
-
-
-    int batchsize = 0;
-  
-    auto inputs = get_inputs();
-    auto x = module_wideresnet_50_->conv1->forward(inputs[0].toTensor());
-    batchsize = x.size(0);
-    x = module_wideresnet_50_->bn1->forward(x).relu_();
    
-    x = torch::max_pool2d(x, 3, 2, 1);
-
-    auto outputs1 = module_wideresnet_50_->layer1->forward(x);
-    auto outputs2 = module_wideresnet_50_->layer2->forward(outputs1);
-    auto outputs3 = module_wideresnet_50_->layer3->forward(outputs2);
-    auto embedding_vectors = outputs2;
-    embedding_vectors = embedding_concat(embedding_vectors, outputs3);
-    embedding_vectors = torch::index_select(embedding_vectors, 1, anomaly_rand_index);
-    typedef Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic,
-                          Eigen::RowMajor>
-    MatrixXf_rm;  // same as MatrixXf, but with row-major memory layout
-    float* anomaly_ptr = anomaly_mean_inv.data_ptr<float>();
-    Eigen::Map<MatrixXf_rm> e_anomaly_mean(anomaly_ptr, anomaly_mean_inv.size(0), anomaly_mean_inv.size(1));
-
-    int B = embedding_vectors.size(0);
-    int C = embedding_vectors.size(1);
-    int H = embedding_vectors.size(2);
-    int W = embedding_vectors.size(3);
-
-    embedding_vectors = embedding_vectors.view({B, C, H * W}).to(at::kCPU);
-
-    for (int batch_index = 0; batch_index < batchsize; batch_index++) {
-      try
-      {
-        auto embedding_vertors_begin_node = embedding_vectors[batch_index];
-        float* embedding_ptr = embedding_vertors_begin_node.data_ptr<float>();
-        Eigen::Map<MatrixXf_rm> e_embedding(embedding_ptr,
-                                            embedding_vertors_begin_node.size(0),
-                                            embedding_vertors_begin_node.size(1));
-        vector<double> dist_list(H * W);
-
-  #pragma omp parallel for
-        for (int i = 0; i < H * W; i++) {
-          auto sample = e_embedding.col(i);
-          auto mean = e_anomaly_mean.matrix().col(i);
-          auto conv_inv =
-              anomaly_conv_inv.index({Slice(None, None), Slice(None, None), i});
-          float* anomaly_convi_ptr = conv_inv.data_ptr<float>();
-          Eigen::Map<MatrixXf_rm> e_anomaly_convi(
-              anomaly_convi_ptr, conv_inv.size(0), conv_inv.size(1));
-          auto delta = sample - mean;
-          auto dot = (delta.transpose() * e_anomaly_convi);
-          auto m = dot * delta;
-          dist_list[i] = m.cwiseSqrt().value();
-
-          /*pytorch
-          auto sample = embedding_vectors[0].index({Slice(None, None), i});
-          auto mean = anomaly_mean.index({Slice(None, None), i});
-          auto conv_inv =  anomaly_conv_inv.index({Slice(None, None), Slice(None,
-          None), i}); auto dist = mahalanobis(sample, mean, conv_inv);
-          dist_list[i] = dist.item<double>();
-          */
-
-        }
-
-        auto dist = torch::tensor(dist_list);
-        dist = dist.reshape({H, W}).unsqueeze(0).unsqueeze(0);  //[28,28]->[1,1,28,28]
-        auto score_map =    F::interpolate(dist, F::InterpolateFuncOptions()
-                                      .size(std::vector<int64_t>{cfg_.dnn_height,
-                                                                cfg_.dnn_width})
-                                      .align_corners(false)
-                                      .mode(torch::kBilinear)).squeeze();
-        double max_score = cfg_.vanomaly[category].anomalyMaxScore;
-        double min_score = cfg_.vanomaly[category].anomalyMinScore;
-        auto scores = (score_map - min_score) / (max_score - min_score) * 255.;
-        
-        
-        auto anomaly_mean_mat = tensor2dToMat(scores.to(c10::ScalarType::Char));
-        applyColorMap(anomaly_mean_mat, anomaly_mean_mat, cv::COLORMAP_JET);
-        segm_t_container& segm = rst_container[batch_index];
-        segm.cnt = 1;
-        segm.candidates[0].obj_id =  dist.mean().item<float>() >  cfg_.vanomaly[category].anomalyThreshold ? false: true;
-        matToImageinfo(anomaly_mean_mat, segm.display_image);
-        
-    } catch (const c10::Error& e) {
-        std::cout << e.msg() << endl;
-        return false;
-      } catch (...) {
-        std::cout << "failed predict_anomaly_detection\n";
-        return false;
-      }
-    }
-  rst_container.cnt = batchsize;
-  return batchsize;
-}
 int dnn_module_torch::detectYolov5(model_config& cfg, float* prediction_ptr,
                    int output_dim1_size, int output_dim2_size,
                    vector<cv::Mat>& origin_image,
