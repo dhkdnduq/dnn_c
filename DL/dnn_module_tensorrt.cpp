@@ -122,7 +122,7 @@ bool dnn_module_tensorrt::build() {
 
   auto config =
       TRTUniquePtr<nvinfer1::IBuilderConfig>(builder->createBuilderConfig());
-  if (!config) {
+   if (!config) {
     return false;
   }
 
@@ -179,10 +179,12 @@ bool dnn_module_tensorrt::build() {
   config->addOptimizationProfile(profile);
   
   ifstream engineFile(mEngineName, ios::binary);
-  if (engineFile) {
+  if (engineFile.is_open()) {
     mEngine = std::shared_ptr<nvinfer1::ICudaEngine>(
         loadEngine(mEngineName, -1), samplesCommon::InferDeleter());
-  } else {
+  }
+  else 
+  {
     // calibration
     if (cfg_.fp16) {
       config->setFlag(BuilderFlag::kFP16);
@@ -216,7 +218,7 @@ bool dnn_module_tensorrt::build() {
   assert(mInputDims.nbDims == 4);
 
   buffers = std::shared_ptr<samplesCommon::BufferManager>(
-      new samplesCommon::BufferManager(mEngine, 0));
+      new samplesCommon::BufferManager(mEngine, cfg_.batchSize));
 
   context = TRTUniquePtr<nvinfer1::IExecutionContext>(
       mEngine->createExecutionContext());
