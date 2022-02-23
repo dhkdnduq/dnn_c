@@ -8,7 +8,7 @@ using namespace cv;
 using namespace std;
 namespace fs = std::experimental::filesystem;
 
-int main_yolov5(){
+int main(){
   fs::path cwd = fs::current_path();
   cout << "current dir : " << cwd.string() << endl;
   bool bload = trt_init("dnn_setting_yolov5.json");
