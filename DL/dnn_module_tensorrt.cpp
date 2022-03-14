@@ -3,8 +3,11 @@
 #include <opencv2/cudaarithm.hpp>
 #include "opencv2/cudawarping.hpp"
 #include "calibrator.hpp"
+#include "common.h"
+#include "logger.h"
+
 const std::string gLoggerName = "TensorRT.DNN";
-auto log_ = gLogger.defineTest(gLoggerName, 0, nullptr);
+auto log_ = sample::gLogger.defineTest(gLoggerName, 0, nullptr);
   
 dnn_module_tensorrt::~dnn_module_tensorrt() {}
 
@@ -267,11 +270,12 @@ bool dnn_module_tensorrt::constructNetwork(
   // const char * test = network->getOutput(0)->getName();
 
   builder->setMaxBatchSize(cfg_.batchSize);
-#ifdef INCREASE_STACK_SIZE
-  config->setMaxWorkspaceSize(3_GiB);
-#else
-  config->setMaxWorkspaceSize(1_GiB);
-#endif
+
+//#ifdef INCREASE_STACK_SIZE
+//  config->setMaxWorkspaceSize(6_GiB);
+  //#else
+  config->setMaxWorkspaceSize(6_GiB);
+  //#endif
   samplesCommon::enableDLA(builder.get(), config.get(), cfg_.dlaCore);
 
   return true;
