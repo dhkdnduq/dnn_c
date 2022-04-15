@@ -584,8 +584,10 @@ int dnn_module_torch::detectYolov5(model_config& cfg, float* prediction_ptr,
             v[range(len(l)), l[:, 0].long() + 5] = 1.0  # cls
             x = torch.cat((x, v), 0)
       */
-
-      if (x.size(0) == 0) continue;
+     if (x.size(0) == 0) {
+        output.push_back(x);
+        continue;
+      }
 
       x.index({Slice(None, None), Slice(5, None)}) *=
           x.index({Slice(None, None), Slice(4, 5)});
@@ -613,8 +615,10 @@ int dnn_module_torch::detectYolov5(model_config& cfg, float* prediction_ptr,
       }
 
       auto n = x.size(0);
-      if (n == 0)
+      if (n == 0) {
+        output.push_back(x);
         continue;
+      }
       else if (n > max_nms)
         x = x.index({x.index({Slice(None, None), 4})
                          .argsort(true)
