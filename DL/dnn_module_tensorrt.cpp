@@ -221,7 +221,7 @@ bool dnn_module_tensorrt::build() {
   assert(mInputDims.nbDims == 4);
 
   buffers = std::shared_ptr<samplesCommon::BufferManager>(
-      new samplesCommon::BufferManager(mEngine, cfg_.batchSize));
+      new samplesCommon::BufferManager(mEngine/*, cfg_.batchSize*/));
 
   context = TRTUniquePtr<nvinfer1::IExecutionContext>(
       mEngine->createExecutionContext());
