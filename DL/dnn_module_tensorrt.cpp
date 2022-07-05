@@ -5,6 +5,7 @@
 #include "calibrator.hpp"
 #include "common.h"
 #include "logger.h"
+#include "NvInfer.h"
 
 const std::string gLoggerName = "TensorRT.DNN";
 auto log_ = sample::gLogger.defineTest(gLoggerName, 0, nullptr);
@@ -23,10 +24,27 @@ bool dnn_module_tensorrt::load_model(string configpath)
 
 	if (!build())
 	{
-		return gLogger.reportFail(log_);
+		gLogger.reportFail(log_);
+    return false;
 	}
 
 	return true;
+}
+
+int dnn_module_tensorrt::predict_binary_classification(binary_rst_list& rst_list)
+{
+  float* hostDataBuffer = static_cast<float*>(buffers->getHostBuffer(inputName));
+  blob_from_images(hostDataBuffer);
+  // Memcpy from device output buffers to host output buffers
+  buffers->copyInputToDevice();
+  bool status = context->executeV2(buffers->getDeviceBindings().data());
+  if (!status) {
+    sample::gLogger.reportFail(log_);
+    
+    return false;
+  }
+  buffers->copyOutputToHost();
+  return verifyBinaryClassification(*buffers, rst_list);
 }
 
 int dnn_module_tensorrt::predict_category_classification(category_rst_list& rst_list )
@@ -41,7 +59,7 @@ int dnn_module_tensorrt::predict_category_classification(category_rst_list& rst_
     return false;
   }
   buffers->copyOutputToHost();
-  return verifyClassification(*buffers, rst_list);
+  return verifyCategoryClassification(*buffers, rst_list);
 }
 int dnn_module_tensorrt::predict_yolov5(bbox_t_container_rst_list& rst_container)
 {
@@ -78,6 +96,7 @@ int dnn_module_tensorrt::predict_yolact(segm_t_container_rst_list& rst_container
 }
 void dnn_module_tensorrt::nhwc_from_images(float* dst) {
   auto buffers = get_preprocess_image_buffers();
+ 
   nhwc_blob_from_images(buffers, dst);  
 }
 
@@ -85,6 +104,8 @@ void dnn_module_tensorrt::nchw_from_images(float* dst) {
   cv::Mat blob;
   auto buffers = get_preprocess_image_buffers();
   if (buffers.size() == 0) return;
+
+  
   blob = cv::dnn::blobFromImages(buffers);
   size_t bytes = 0;
   bytes = blob.total() * blob.elemSize();
@@ -144,18 +165,22 @@ bool dnn_module_tensorrt::build() {
   IOptimizationProfile* profile = builder->createOptimizationProfile();
   if (input_dims.d[1] <= 4 ){  //1 or 3 
     cfg_.is_nchw = true;
+    if (input_dims.d[0] >= 1)
+      cfg_.batchSize = input_dims.d[0];
     cfg_.dnn_width = input_dims.d[3];
     cfg_.dnn_height = input_dims.d[2];
     cfg_.dnn_chnnel = input_dims.d[1];
   }
   else  {
     cfg_.is_nchw = false;
+    if (input_dims.d[0] >= 1)
+      cfg_.batchSize = input_dims.d[0];
     cfg_.dnn_width = input_dims.d[2];
     cfg_.dnn_height = input_dims.d[1];
     cfg_.dnn_chnnel = input_dims.d[3];
   }
 
-  
+ 
   if (cfg_.is_nchw == false) {
     profile->setDimensions(inputName.c_str(), OptProfileSelector::kMIN,
                            Dims4(cfg_.batchSize, cfg_.dnn_width,
@@ -185,6 +210,7 @@ bool dnn_module_tensorrt::build() {
   if (engineFile.is_open()) {
     mEngine = std::shared_ptr<nvinfer1::ICudaEngine>(
         loadEngine(mEngineName, -1), samplesCommon::InferDeleter());
+   
   }
   else 
   {
@@ -219,6 +245,7 @@ bool dnn_module_tensorrt::build() {
   assert(network->getNbInputs() == 1);
   mInputDims = network->getInput(0)->getDimensions();
   assert(mInputDims.nbDims == 4);
+
 
   buffers = std::shared_ptr<samplesCommon::BufferManager>(
       new samplesCommon::BufferManager(mEngine/*, cfg_.batchSize*/));
@@ -271,11 +298,7 @@ bool dnn_module_tensorrt::constructNetwork(
 
   builder->setMaxBatchSize(cfg_.batchSize);
 
-//#ifdef INCREASE_STACK_SIZE
-//  config->setMaxWorkspaceSize(6_GiB);
-  //#else
-  config->setMaxWorkspaceSize(6_GiB);
-  //#endif
+  config->setMaxWorkspaceSize(cfg_.G_ib * (1 << 30));
   samplesCommon::enableDLA(builder.get(), config.get(), cfg_.dlaCore);
 
   return true;
@@ -353,45 +376,77 @@ int dnn_module_tensorrt::verifyYolact( const samplesCommon::BufferManager& buffe
                           ori_image_buffer, rst_container);
 
 }
+int dnn_module_tensorrt::verifyBinaryClassification(const samplesCommon::BufferManager& buffers,
+                               binary_rst_list& rst_container)
+{
+ 
+  int batchSize = cfg_.batchSize;
+  int classNum = mOutputDims[0].d[1];
+  float* outputs = static_cast<float*>(buffers.getHostBuffer(outputNames[0]));
+  for (int batch_index = 0; batch_index < cfg_.batchSize; batch_index++) {
+    float* output = &(outputs[batch_index * classNum]);
+    float prob = 0;
+    
+     prob = *output;
+    rst_container[batch_index] = prob > cfg_.threshold ? true : false;
+     
+  } 
+  rst_container.cnt = batchSize;
+  return batchSize;
+}
 
 //!
 //! \brief Classifies digits and verify result
 //!
 //! \return whether the classification output matches expectations
 //!
-int dnn_module_tensorrt::verifyClassification(const samplesCommon::BufferManager& buffers, category_rst_list& rst_container) {
+int dnn_module_tensorrt::verifyCategoryClassification(const samplesCommon::BufferManager& buffers, category_rst_list& rst_container) {
  
   int batchSize = cfg_.batchSize;
   int classNum = mOutputDims[0].d[1];
   float* outputs = static_cast<float*>(buffers.getHostBuffer(outputNames[0]));
-  
+  auto softmax = [](vector<float> unnorm_probs) -> vector<float> {
+    int n_classes = unnorm_probs.size();
+
+    // 1. Partition function
+    float log_sum_of_exp_probs = 0;
+    for (auto& n : unnorm_probs) {
+      log_sum_of_exp_probs += std::exp(n);
+    }
+    log_sum_of_exp_probs = std::log(log_sum_of_exp_probs);
+
+    // 2. normalize
+    std::vector<float> probs(n_classes);
+    for (int class_idx = 0; class_idx != n_classes; class_idx++) {
+      probs[class_idx] =
+          std::exp(unnorm_probs[class_idx] - log_sum_of_exp_probs);
+    }
+    return probs;
+  };
+
   for (int batch_index = 0; batch_index < cfg_.batchSize; batch_index++) {
       float* output = &(outputs[batch_index * classNum]);
       
-      float val{0.0f};
-      int idx{0};
-      /*
-      float sum{0.0f};
-      for (int i = 0; i < outputSize; i++) {
-        output[i] = exp(output[i]);
-        sum += output[i];
-      }
-      
-      for (int i = 0; i < outputSize; i++) {
-        output[i] /= sum;
-        val = std::max(val, output[i]);
-        if (val == output[i]) {
-          idx = i;
-        }
-        cout << " Prob " << i << "  " << std::fixed << std::setw(5)
-                         << std::setprecision(4) << output[i] << " "
-                         << "Class " << i << ": "
-                         << std::string(int(std::floor(output[i] * 10 + 0.5f)),
-                                        '*')
-                         << std::endl;
-      }
+       
+      std::vector<float> unnorm_probs( output, output +  classNum);
+      vector<float>  probs;
+      probs = softmax(unnorm_probs);
+      auto prob = std::max_element(probs.begin(), probs.end());
+      auto idx = std::distance(probs.begin(), prob);
+      float prob_float = *prob;
+
+     /*
+      cout << " Prob " << prob_float << "  " << std::fixed << std::setw(5)
+           << std::setprecision(4) << unnorm_probs[idx] << " "
+           << "Class " << idx << ": "
+           << std::string(int(std::floor(unnorm_probs[idx] * 10 + 0.5f)),
+                          '*')
+           << std::endl;
       */
-      
+
+      /*
+      float val = 0;
+      int idx = 0;
       for (int category = 0; category < classNum; category++) {
         float prob = output[category];
         if (val < prob) {
@@ -399,6 +454,9 @@ int dnn_module_tensorrt::verifyClassification(const samplesCommon::BufferManager
           val = prob;
         }
       }
+      
+      cout << val << ","<<idx<<endl ;
+          */
       rst_container[batch_index] = idx;
   }
   rst_container.cnt = batchSize;
