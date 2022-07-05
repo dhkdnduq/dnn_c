@@ -63,6 +63,9 @@ bool model_config::load_config(string configpath)
       this->mean = tokenize<double>(s_mean,',');
       string s_std = jcommon.get("std", "0.5,0.5,0.5").asString();
       this->std = tokenize<double>(s_std, ',');
+      this->G_ib = std::stoi(jcommon.get("G_ib", 4).asString());
+      this->letterboxing = jcommon.get("letterboxing", "false").asString() == "true" ?  true : false;
+      this->use_gpu_image_process = jcommon.get("use_gpu_image_process", "true").asString() == "true" ?  true : false;
     }
 
     Json::Value& jyolact = root["yolact"];
