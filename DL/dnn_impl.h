@@ -8,8 +8,8 @@
 class  dnn_impl {
  
  protected:
-  void gen_dl_image(cv::Mat frame);
- 
+  void gen_dl_image_gpu(cv::Mat frame);
+  void gen_dl_image_cpu(cv::Mat frame);
   vector<cv::Mat>& get_origin_image_buffers() { return ori_image_buffer; }
   vector<cv::Mat>& get_preprocess_image_buffers() { return preprocess_image_buffer; }
 
@@ -27,11 +27,12 @@ class  dnn_impl {
     preprocess_image_buffer.clear();
   }
 	virtual bool load_model(string configpath = "dnn_setting.json") = 0;
+  int get_batch_size() { return cfg_.batchSize; };
   bool file_exists(const std::string fileName, bool verbose);
   bool add_image(const char* filepath);
   bool add_image(const cv::Mat data);
   bool add_image(unsigned char* buf, const size_t data_length);
-
+  void fill_dummy_image_if_not_enough();
   //multi thread 사용시 lock 필요 
   static int predict_yolact(model_config& cfg, float* loc_name,
                               float* conf_name, float* mask_name,
