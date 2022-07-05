@@ -20,6 +20,8 @@ public:
         bool fp16{false};                
   bool is_use_mean_sub {true};
   bool is_nchw;
+  bool letterboxing{false};
+  bool use_gpu_image_process{true};
 	string modelFileName;
   bool anomalyEnable = false;;
   vector<int> order_of_feature_index_to_batch;
@@ -30,6 +32,8 @@ public:
 	//for yolact
   int yolact_max_size;
   int yolact_min_size ;
+  unsigned long long G_ib;
+
 
 };
 
