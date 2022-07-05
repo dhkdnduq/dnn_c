@@ -39,7 +39,9 @@ private:
                         TRTUniquePtr<nvonnxparser::IParser>& parser);
 
 
-  int verifyClassification(const samplesCommon::BufferManager& buffers, category_rst_list& rst_container);
+  int verifyCategoryClassification(const samplesCommon::BufferManager& buffers, category_rst_list& rst_container);
+  int verifyBinaryClassification(const samplesCommon::BufferManager& buffers,   binary_rst_list& rst_container);
+  
   int verifyYolact(const samplesCommon::BufferManager& buffers, segm_t_container_rst_list& rst_container);
   int verifyYolov5(const samplesCommon::BufferManager& buffers, bbox_t_container_rst_list& rst_container);
   bool saveEngine(const std::string& fileName);
@@ -49,6 +51,8 @@ private:
 public:
 	virtual bool load_model(string configpath);
 	int predict_category_classification(category_rst_list& rst_list);
+  int predict_binary_classification(binary_rst_list& rst_list);
+
   int predict_yolact(segm_t_container_rst_list& rst_container);
   int predict_yolov5(bbox_t_container_rst_list& rst_container);
 
